@@ -9,17 +9,29 @@ package main
 //    - b
 //    - c
 // template: >
+//   package {{ .package }}
+//
+//   {{ range $k, $v := .items }}
+//     func f{{ $k }}() {
+//       print("{{ $v }}")
+//     }
+//   {{ end }}
+
+//go:generate bang -dest=example_generated_2.go $GOFILE:$GOLINE
+// vars:
+//   package: main
+//   items:
+//    - a
+//    - b
+//    - c
+// template: >
 //   package {{.package}}
 //
-//   func main() {
-//        println("123: {{.vars.items}}")
-//   }
-//
-//   {{range $k, $v := .items}}
-//       func f{{$k}}() {
-//        print("{{$v}}")
-//       }
-//   {{end}}
+//   {{ range $k, $v := .items }}
+//     func f2{{ $k }}() {
+//       print("{{ $v }}")
+//     }
+//   {{ end }}
 
 func main() {
 	// noop

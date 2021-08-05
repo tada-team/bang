@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"bytes"
+	"flag"
 	"fmt"
 	"go/format"
 	"log"
@@ -16,64 +17,38 @@ import (
 )
 
 func main() {
-	if len(os.Args) != 2 {
-		fmt.Println("need 1 argument: <file.go:line>")
+	destPtr := flag.String("dest", "", "destination filename (overrides value from yaml)")
+	flag.Parse()
+
+	if len(flag.Args()) != 1 {
+		fmt.Println("need 1 argument: <file.go:line>, got:", "destPtr:", *destPtr)
+		fmt.Println("need 1 argument: <file.go:line>, got:", flag.Args())
 		os.Exit(1)
 	}
 
-	bits := strings.SplitN(os.Args[1], ":", 2)
-	src, err := os.Open(bits[0])
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-	defer func() { _ = src.Close() }()
-
+	bits := strings.SplitN(flag.Args()[0], ":", 2)
+	src := bits[0]
 	start, err := strconv.Atoi(bits[1])
 	if err != nil {
 		fmt.Println("invalid line:", err)
 		os.Exit(1)
 	}
 
-	i := 0
-
-	var yamlData []byte
-	scanner := bufio.NewScanner(src)
-
-	for scanner.Scan() {
-		i++
-		if i <= start {
-			continue
-		}
-
-		line := scanner.Text()
-		if !strings.HasPrefix(line, "//") {
-			break
-		}
-
-		if line == "//" {
-			line = ""
-		} else if strings.HasPrefix(line, "// ") {
-			line = strings.TrimPrefix(line, "// ")
-		} else if strings.HasPrefix(line, "//\t") {
-			line = strings.TrimPrefix(line, "//\t")
-		}
-
-		yamlData = append(yamlData, line...)
-		yamlData = append(yamlData, "\n"...)
-	}
-
-	if err := scanner.Err(); err != nil {
-		fmt.Println("scan fail:", err)
+	yamlData, err := getYamlData(src, start)
+	if err != nil {
+		fmt.Println(err)
 		os.Exit(1)
 	}
-
 	log.Printf("yamlData:\n%s\n---", string(yamlData))
 
 	var j job
 	if err := yaml.Unmarshal(yamlData, &j); err != nil {
 		fmt.Println("format fail:", err)
 		os.Exit(1)
+	}
+
+	if *destPtr != "" {
+		j.Dest = *destPtr
 	}
 
 	if err := j.do(); err != nil {
@@ -110,4 +85,45 @@ func (j job) do() error {
 	}
 
 	return nil
+}
+
+func getYamlData(fname string, start int) ([]byte, error) {
+	src, err := os.Open(fname)
+	if err != nil {
+		return nil, err
+	}
+	defer func() { _ = src.Close() }()
+
+	var yamlData []byte
+	scanner := bufio.NewScanner(src)
+
+	i := 0
+	for scanner.Scan() {
+		i++
+		if i <= start {
+			continue
+		}
+
+		line := scanner.Text()
+		if !strings.HasPrefix(line, "//") {
+			break
+		}
+
+		if line == "//" {
+			line = ""
+		} else if strings.HasPrefix(line, "// ") {
+			line = strings.TrimPrefix(line, "// ")
+		} else if strings.HasPrefix(line, "//\t") {
+			line = strings.TrimPrefix(line, "//\t")
+		}
+
+		yamlData = append(yamlData, line...)
+		yamlData = append(yamlData, "\n"...)
+	}
+
+	if err := scanner.Err(); err != nil {
+		return nil, err
+	}
+
+	return yamlData, nil
 }
