@@ -2,14 +2,14 @@
 
 package main
 
-func f20() {
+func f30() {
 	print("a")
 }
 
-func f21() {
+func f31() {
 	print("b")
 }
 
-func f22() {
+func f32() {
 	print("c")
 }

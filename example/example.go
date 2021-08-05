@@ -33,6 +33,10 @@ package main
 //     }
 //   {{ end }}
 
-func main() {
-	// noop
-}
+//go:generate bang -template=example.tpl -dest=example_generated_3.go $GOFILE:$GOLINE
+// vars:
+//   package: main
+//   items:
+//    - a
+//    - b
+//    - c

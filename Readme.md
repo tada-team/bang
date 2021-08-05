@@ -14,13 +14,16 @@ go install github.com/tada-team/bang
 2. Write line `//go:generate bang $GOFILE:$GOLINE`, and `//`-commented yaml content below that line:
 
 ```go
+package mypackage
+
 //go:generate bang $GOFILE:$GOLINE
 //  
 //  ...yaml...
 //
 ```
 
-..where yaml has the following format:
+...where yaml has the following format:
+
 ```yaml
 - template: <go template contents>
 - vars: <variables for template>
@@ -68,4 +71,30 @@ func intSum(a, b int) int {
 func float64Sum(a, b float64) float64 {
 	return a + b
 }
+```
+
+### Optional command line flags
+
+You can use `-dest` or/and `-template` flats instead `dest`/`template` keys in yaml.
+
+```go
+package main
+
+//go:generate bang -dest=main_generated.go -template=main.tpl $GOFILE:$GOLINE
+// vars:
+//   package: main
+//   types:
+//    - int
+//    - float64
+```
+
+`main.tpl`:
+```gotemplate
+package {{.package}}
+
+{{ range $type := .types }}
+  func {{ $type }}Sum(a, b {{ $type }}) {{ $type }} {
+    return a + b
+  }
+{{ end }}
 ```
