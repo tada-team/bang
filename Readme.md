@@ -25,9 +25,9 @@ package mypackage
 Yaml format is:
 
 ```yaml
-- template: <go template contents>
-- vars: <variables for template>
-- dest: <filename for saving rendered template>
+template: <go template contents>
+vars: <variables for template>
+dest: <filename for saving rendered template>
 ```
 
 3. run `go generate`
