@@ -1,10 +1,10 @@
 ## Bang
 
-Sugar for `go generate`. Reads yml data from .go source file and render template.
+Sugar for `go generate`. Reads yml data from .go source file and render template with variables.
 
 Install:
 ```bash
-go install go install github.com/tada-team/bang
+go install github.com/tada-team/bang
 ```
 
 Sample usage:
