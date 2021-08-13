@@ -12,7 +12,7 @@ package main
 //   package {{ .package }}
 //
 //   {{ range $k, $v := .items }}
-//     func f{{ $k }}() {
+//     func vars1example{{ $k }}() {
 //       print("{{ $v }}")
 //     }
 //   {{ end }}
@@ -28,15 +28,18 @@ package main
 //   package {{.package}}
 //
 //   {{ range $k, $v := .items }}
-//     func f2{{ $k }}() {
+//     func vars2example{{ $k }}() {
 //       print("{{ $v }}")
 //     }
 //   {{ end }}
 
-//go:generate bang -template=example.tpl -dest=example_generated_3.go $GOFILE:$GOLINE
+//go:generate bang -verbose -template=example.tpl -dest=example_generated_3.go $GOFILE:$GOLINE
 // vars:
 //   package: main
+//   prefix: vars3example
 //   items:
 //    - a
 //    - b
 //    - c
+
+//go:generate bang -template=example.tpl -vars=vars.yaml -dest=example_generated_4.go $GOFILE:$GOLINE

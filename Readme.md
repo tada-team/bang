@@ -46,7 +46,7 @@ package main
 //    - int
 //    - float64
 // template: >
-//   package {{.package}}
+//   package {{ .package }}
 //
 //   {{ range $type := .types }}
 //       func {{ $type }}Sum(a, b {{ $type }}) {{ $type }} {
@@ -74,22 +74,30 @@ func float64Sum(a, b float64) float64 {
 
 ### Optional command line flags
 
-You can use `-dest` or/and `-template` flats instead `dest`/`template` keys in yaml.
+* `-dest` argument overrides `dest` key in yaml
+* `-template` argument overrides `template` key in yaml
+* `-vars` argument overrides `vars` key in yaml
+* `-verbose` argument adds more output
+
+Example: 
 
 ```go
 package main
 
-//go:generate bang -dest=main_generated.go -template=main.tpl $GOFILE:$GOLINE
-// vars:
-//   package: main
-//   types:
-//    - int
-//    - float64
+//go:generate bang -verbose -dest=main_generated.go -template=main.tpl $GOFILE:$GOLINE
+```
+
+`vars.tpl`:
+```yaml
+package: main
+types:
+ - int
+ - float64
 ```
 
 `main.tpl`:
 ```gotemplate
-package {{.package}}
+package {{ .package }}
 
 {{ range $type := .types }}
   func {{ $type }}Sum(a, b {{ $type }}) {{ $type }} {

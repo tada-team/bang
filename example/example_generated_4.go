@@ -2,14 +2,14 @@
 
 package main
 
-func vars2example0() {
+func vars4example0() {
 	print("a")
 }
 
-func vars2example1() {
+func vars4example1() {
 	print("b")
 }
 
-func vars2example2() {
+func vars4example2() {
 	print("c")
 }

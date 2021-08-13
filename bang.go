@@ -17,7 +17,9 @@ import (
 )
 
 func main() {
+	verbosePtr := flag.Bool("verbose", false, "debug")
 	destPtr := flag.String("dest", "", "destination filename (overrides value from yaml)")
+	varsPtr := flag.String("vars", "", "variables (overrides value from yaml)")
 	templatePtr := flag.String("template", "", "template filename (overrides value from yaml)")
 	flag.Parse()
 
@@ -39,16 +41,34 @@ func main() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	log.Printf("yamlData:\n%s\n---", string(yamlData))
+
+	if *verbosePtr {
+		log.Printf("yamlData:\n%s\n---", string(yamlData))
+	}
 
 	var j job
-	if err := yaml.Unmarshal(yamlData, &j); err != nil {
-		fmt.Println("format fail:", err)
-		os.Exit(1)
+	if len(yamlData) > 0 {
+		if err := yaml.Unmarshal(yamlData, &j); err != nil {
+			fmt.Println("format fail:", err)
+			os.Exit(1)
+		}
 	}
 
 	if *destPtr != "" {
 		j.Dest = *destPtr
+	}
+
+	if *varsPtr != "" {
+		b, err := os.ReadFile(*varsPtr)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		err = yaml.Unmarshal(b, &j.Vars)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
 	}
 
 	if *templatePtr != "" {
@@ -58,7 +78,6 @@ func main() {
 			os.Exit(1)
 		}
 		j.Template = string(b)
-		fmt.Println("j.Template:", j.Template)
 	}
 
 	if err := j.do(); err != nil {

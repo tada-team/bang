@@ -2,14 +2,14 @@
 
 package main
 
-func f30() {
+func vars3example0() {
 	print("a")
 }
 
-func f31() {
+func vars3example1() {
 	print("b")
 }
 
-func f32() {
+func vars3example2() {
 	print("c")
 }

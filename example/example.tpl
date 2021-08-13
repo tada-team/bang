@@ -1,7 +1,7 @@
 package {{ .package }}
 
 {{ range $k, $v := .items }}
-    func f3{{ $k }}() {
+    func {{ $.prefix }}{{ $k }}() {
         print("{{ $v }}")
     }
 {{ end }}

@@ -1,0 +1,6 @@
+package: main
+prefix: vars4example
+items:
+  - a
+  - b
+  - c
