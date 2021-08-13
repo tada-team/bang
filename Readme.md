@@ -75,8 +75,8 @@ func float64Sum(a, b float64) float64 {
 ### Optional command line flags
 
 * `-dest` argument overrides `dest` key in yaml
-* `-template` argument overrides `template` key in yaml
-* `-vars` argument overrides `vars` key in yaml
+* `-template` argument takes `template` from given template file
+* `-vars` argument takes `vars` from given yaml file
 * `-verbose` argument adds more output
 
 Example: 
